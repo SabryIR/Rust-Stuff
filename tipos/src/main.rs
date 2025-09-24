@@ -9,13 +9,13 @@ enum Semaforo {
 
 #[derive(Debug)]
 enum Naipe {
-    Ouros,
     Copas,
+    Espadas,
+    Ouros,
     Paus,
-    Espadas
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Rank {
     A,
     Numero(u8),
@@ -66,42 +66,44 @@ enum ItemBiblioteca {
     Revista(Revista)
 }
 
+impl Carta {
+    fn manilhas(&self) -> [Carta; 4] {
+        let rank = match self.rank {
+            Rank::Numero(7) => Rank::Q,
+            Rank::Numero(n) => Rank::Numero(n+1),
+            Rank::Q => Rank::J,
+            Rank::J => Rank::K,
+            Rank::K => Rank::A,
+            Rank::A => Rank::Numero(2)
+        };
+
+        [
+            Carta {
+                naipe: Naipe::Copas,
+                rank: rank.clone()
+            },
+            Carta {
+                naipe: Naipe::Espadas,
+                rank: rank.clone()
+            },
+            Carta {
+                naipe: Naipe::Ouros,
+                rank: rank.clone()
+            },
+            Carta {
+                naipe: Naipe::Paus,
+                rank: rank.clone()
+            }
+        ]
+    }
+}
+
 fn main() {
-    let semaforo = Semaforo::Verde;
-    let as_espadas = Carta {
+    let vira = Carta {
         naipe: Naipe::Espadas,
         rank: Rank::A,
     };
-    let ponto = ObjGeometrico::Ponto(Ponto {
-        x: 2.0,
-        y: 3.0
-    });
-    let quad = ObjGeometrico::Quadrilatero([
-        Ponto {
-            x: 1.0,
-            y: 1.0,
-        },
-        Ponto {
-            x: 2.0,
-            y: 1.0,
-        },
-        Ponto {
-            x: 1.0,
-            y: 2.0,
-        },
-        Ponto {
-            x: 2.0,
-            y: 2.0,
-        },
-    ]);
-    let livro = ItemBiblioteca::Livro(Livro {
-        titulo: String::from("Crime e Castigo"),
-        autor: String::from("Fiodor Dostoievski"),
-        paginas: 562
-    });
-    println!("{:?}", semaforo);
-    println!("{:?}", as_espadas);
-    println!("{:?}", ponto);
-    println!("{:?}", quad);
-    println!("{:?}", livro);
+
+    let man = vira.manilhas();
+    println!("{:?}", man);
 }
